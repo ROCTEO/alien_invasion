@@ -37,9 +37,9 @@ def check_events(ai_settings,screen,ship,bullets):
 
 def update_screen(ai_settings, screen, ship, aliens, bullets):
     """更新屏幕上的图像，并切换到新屏幕"""
-    #每次循环时都重绘屏幕
+    # 每次循环时都重绘屏幕
     screen.fill(ai_settings.bg_color)
-    #在飞船和外星人后面重绘所有子弹
+    # 在飞船和外星人后面重绘所有子弹
     for bullet in bullets.sprites():
         bullet.draw_bullet()
     ship.blitme()
@@ -48,15 +48,24 @@ def update_screen(ai_settings, screen, ship, aliens, bullets):
     # 让最近绘制的屏幕可见
     pygame.display.flip()
 
-def update_bullet(bullets):
+def update_bullet(ai_settings,screen,ship,aliens, bullets):
     """更新子弹位置，并删除消失的子弹"""
-    #更新子弹位置
+    # 更新子弹位置
     bullets.update()
 
     # 删除消失的子弹
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
+
+    # 检查是否有子弹击中外星人
+    # 如果时这样，就删除响应的外星人和子弹
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+    if len(aliens) ==0:
+        #删除现有的子弹并创建一群新的外星人
+        bullets.empty()
+        create_fleet(ai_settings,screen,ship,aliens)
 
 def fire_bullet(ai_settings,screen,ship,bullets):
     # 创建一颗子弹，并将其加入编组bullets

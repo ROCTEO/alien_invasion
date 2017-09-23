@@ -31,6 +31,7 @@ def run_game():
         #监视鼠标和键盘事件
         gf.check_events(ai_settings,screen,ship,bullets)
         ship.update()
+        gf.update_alien(ai_settings, aliens)
         gf.update_bullet(bullets)
         #更新屏幕
         gf.update_screen(ai_settings, screen, ship, aliens, bullets)

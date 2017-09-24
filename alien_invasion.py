@@ -8,6 +8,7 @@ from settings import Settings
 from ship import Ship
 from game_stats import Game_stats
 from button import Button
+from scoreboard import Scoreboard
 import game_functions as gf
 
 def run_game():
@@ -23,6 +24,9 @@ def run_game():
 
     #创建一个用于存储游戏统计信息的实例
     stats = Game_stats(ai_settings)
+
+    #创建一个显示得分的实例
+    sb = Scoreboard(ai_settings,screen, stats)
 
     # 创建一艘飞船
     ship = Ship(ai_settings,screen)
@@ -42,9 +46,9 @@ def run_game():
         if stats.game_active:
             ship.update()
             gf.update_alien(ai_settings, stats, screen, ship, aliens, bullets)
-            gf.update_bullet(ai_settings,screen,ship,aliens, bullets)
+            gf.update_bullet(ai_settings,screen,stats,sb,ship,aliens, bullets)
         #更新屏幕
-        gf.update_screen(ai_settings, screen, stats, ship, aliens, bullets,
+        gf.update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets,
                          play_button)
 
 run_game()

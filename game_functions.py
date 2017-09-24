@@ -61,7 +61,7 @@ def check_play_button(ai_settings, screen, stats, play_button,
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
 
-def update_screen(ai_settings, screen, stats, ship, aliens, bullets,
+def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets,
                   play_button):
     """更新屏幕上的图像，并切换到新屏幕"""
     # 每次循环时都重绘屏幕
@@ -71,6 +71,7 @@ def update_screen(ai_settings, screen, stats, ship, aliens, bullets,
         bullet.draw_bullet()
     ship.blitme()
     aliens.draw(screen)
+    sb.show_score()
 
     #如果游戏处于非活动状态，则显示play按钮
     if not stats.game_active:
@@ -79,7 +80,7 @@ def update_screen(ai_settings, screen, stats, ship, aliens, bullets,
     # 让最近绘制的屏幕可见
     pygame.display.flip()
 
-def update_bullet(ai_settings,screen,ship,aliens, bullets):
+def update_bullet(ai_settings, screen, stats, sb, ship, aliens, bullets):
     """更新子弹位置，并删除消失的子弹"""
     # 更新子弹位置
     bullets.update()
@@ -88,13 +89,20 @@ def update_bullet(ai_settings,screen,ship,aliens, bullets):
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
-    check_bullet_alien_collisions(ai_settings,screen,ship,aliens,bullets)
+    check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship,
+                                   aliens, bullets)
 
-def check_bullet_alien_collisions(ai_settings,screen,ship,aliens,bullets):
+def check_bullet_alien_collisions(ai_settings, screen, stats, sb,
+                                   ship, aliens, bullets):
     """响应子弹与外星人的碰撞"""
     # 检查是否有子弹击中外星人
     # 如果时这样，就删除响应的外星人和子弹
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    if collisions:
+        for aliens in collisions.values():
+            stats.score += ai_settings.alien_point * len(aliens)
+            sb.prep_score()
+        check_high_score(stats, sb)
 
     if len(aliens) ==0:
         #删除现有的子弹并创建一群新的外星人
@@ -197,3 +205,9 @@ def update_alien(ai_settings, stats, screen, ship, aliens, bullets):
 
     #检测外星人是否到达屏幕底部
     check_aliens_bottom(ai_settings,stats,screen,ship,aliens,bullets)
+
+def check_high_score(stats,sb):
+    """检测是否出现最高分"""
+    if stats.score >stats.high_score:
+        stats.high_score = stats.score
+        sb.prep_high_score()

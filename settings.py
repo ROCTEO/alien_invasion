@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-__author__ = 'zjp'
-
 class Settings():
     """存储《外星人入侵》的所有设置的类"""
 

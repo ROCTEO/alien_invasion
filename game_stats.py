@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-__author__ = 'zjp'
-
-
 class Game_stats():
     """跟踪游戏的统计数据"""
     def __init__(self, ai_settings):
